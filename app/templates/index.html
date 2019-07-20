@@ -1,0 +1,43 @@
+{% block scripts %}
+<script src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
+<script>
+        function encode(numElement) {
+            $.post('/led_encode', {
+            number: $(numElement).val()
+            }).done(function(response) {
+            }).fail(function() {
+                console.log("Error: Could not contact server.");
+            });
+        }
+
+        function read_sw() {
+            let sw = $('#switch');
+            $.get('/switch', {
+            }).done(function(response) {
+                let state = response == 'True' ? 'ON' : 'OFF';
+                sw.text(state);
+            }).fail(function() {
+                sw.text('Error');
+            });
+
+            setTimeout(read_sw, 100);
+        }
+
+        $(document).ready(function() {
+          setTimeout(read_sw, 100);
+        });
+
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Assignment 1</h1>
+<label>Enter a number (between 1 and 15): </label><input type="number" id="num"/><span>
+    <a href="javascript:encode('#num');">Encode</a>
+    </span>
+
+<div>
+    <b>Switch:</b>&nbsp;<span id="switch"></span>
+</div>
+
+{% endblock %}
